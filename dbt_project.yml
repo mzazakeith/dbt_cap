@@ -1,0 +1,29 @@
+# dbt Project Configuration for CHW Analytics
+
+name: 'chw_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'chw_analytics'
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["data"]
+macro-paths: ["models/macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"  
+clean-targets:       
+  - "target"
+  - "dbt_packages"
+
+# Configuring models
+models:
+  chw_analytics:
+    # Configurations for all models in this project
+    +materialized: table
+    
+    # Configurations for specific model folders
+    starter_code:
+      +schema: metrics 

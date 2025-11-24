@@ -1,0 +1,28 @@
+# Sources file for CHW Analytics
+
+version: 2
+
+sources:
+  - name: fct_chv_activity
+    schema: marts
+    tables:
+      - name: fct_chv_activity
+        description: "Fact table containing CHW activity records"
+        columns:
+          - name: activity_id
+            description: "Unique identifier for each activity"
+            tests:
+              - unique
+              - not_null
+          - name: chv_id
+            description: "Identifier for the CHW who performed the activity"
+          - name: activity_date
+            description: "Date the activity occurred"
+          - name: activity_type
+            description: "Type of activity performed"
+          - name: household_id
+            description: "Household that was visited"
+          - name: patient_id
+            description: "Individual patient served"
+          - name: is_deleted
+            description: "Soft delete flag"

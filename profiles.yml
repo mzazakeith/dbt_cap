@@ -1,0 +1,19 @@
+# dbt Profile Configuration for CHW Analytics
+# This file contains database connection settings
+
+version: 2
+
+chw_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      port: 5432
+      password: password
+      dbname: chw_analytics  
+      schema: marts          
+      threads: 4
+      keepalives_idle: 0
+     

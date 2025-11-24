@@ -1,0 +1,70 @@
+# Schema file for CHW Activity Monthly model
+# Contains documentation and data quality tests
+
+version: 2
+
+models:
+  - name: chw_activity_monthly
+    description: |
+      Monthly aggregation of Community Health Worker (CHW) activities for dashboard performance metrics.
+      This model transforms detailed activity records into monthly summaries by CHW, calculating key performance
+      indicators used for monitoring CHW productivity and identifying high/low performers.
+      
+      **Business Rules**:
+      - Activities on/after the 26th are assigned to the following month
+      - Excludes records with NULL chv_id, NULL activity_date, or deleted records
+      - Uses composite unique key (chv_id, report_month) to prevent duplicates
+
+    columns:
+      - name: chv_id
+        description: Unique identifier for the Community Health Worker who performed the activities
+        tests:
+          - not_null
+
+      - name: report_month
+        description: First day of the reporting month (YYYY-MM-01 format). Activities are assigned to months based on the 26th cutoff rule.
+        tests:
+          - not_null
+
+      - name: total_activities
+        description: Total number of activities performed by this CHW during the reporting month
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: unique_households_visited
+        description: Number of distinct households visited by the CHW during the reporting month. Same household visited multiple times is counted once.
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: unique_patients_served
+        description: Number of distinct individual patients served by the CHW during the reporting month. Same patient seen multiple times is counted once. NULL patient_id values are excluded.
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: pregnancy_visits
+        description: Count of activities where activity_type = 'pregnancy_visit' during the reporting month
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: child_assessments
+        description: Count of activities where activity_type = 'child_assessment' during the reporting month
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: family_planning_visits
+        description: Count of activities where activity_type = 'family_planning' during the reporting month
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    # Additional model-level tests
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [chv_id, report_month]
+          config:
+            severity: error
